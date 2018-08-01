@@ -1,0 +1,30 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.col-2 {
+    flex: 0 1 40%;
+}
+
+.col-2:first-of-type {
+    text-align: right;
+}
+
+.col-1 {
+    flex: 0 1 20%;
+    display: flex;
+    justify-content: space-around;
+}
+
+.col-1 span {
+    background-color: #3F51B5;
+    text-align: center;
+    color: #fff;
+    width: 30px;
+    display: inline-block;
+}
+
+
+
