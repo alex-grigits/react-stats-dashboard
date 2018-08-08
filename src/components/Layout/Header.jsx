@@ -22,7 +22,7 @@ const styles = {
 };
 
 function Header(props) {
-  const { classes } = props;
+  const { classes, title } = props;
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -36,7 +36,7 @@ function Header(props) {
             <MenuIcon />
           </IconButton>
           <Typography variant="title" color="inherit" className={classes.flex}>
-            Dashboard
+            {title}
           </Typography>
         </Toolbar>
       </AppBar>

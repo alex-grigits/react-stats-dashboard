@@ -5,6 +5,7 @@ import { Grid, withStyles, Paper } from '@material-ui/core';
 import TableStandings from '../components/TableStandings/TableStandings';
 import ListResults from '../components/ListResults/ListResults';
 
+
 const styles = theme => ({
   root: {
     flexGrow: 1,
@@ -24,12 +25,14 @@ class Competition extends React.PureComponent {
     competitionId: this.props.match.params.id,
     matchDay: 1,
     standings: [],
-    matchDayResults: []
+    matchDayResults: [],
+    currentMatchday: 1
   }
 
   componentDidMount() {
     this.getTableStandings(this.state.competitionId);
     this.getMatchDayResults(this.state.competitionId, this.state.matchDay);
+    this.getCompetitionSeasons(this.state.competitionId);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -100,7 +103,7 @@ class Competition extends React.PureComponent {
         <Grid container spacing={8}>
           <Grid item sm={12} md={6}>
             <Paper className={classes.paper}>
-              <ListResults matchDayResults={matchDayResults} getNext={this.getNextMatchDay} getPrev={this.getPrevMatchDay} matchDay={matchDay}/>
+              <ListResults matchDayResults={matchDayResults} getNext={this.getNextMatchDay} getPrev={this.getPrevMatchDay} matchDay={matchDay} />
             </Paper>
           </Grid>
           <Grid item sm={12} md={6}>
