@@ -34,7 +34,7 @@ class Sidebar extends React.Component {
   };
 
   render() {
-    const { classes, open, handleSidebarToggle, competitions, handleCompetition } = this.props;
+    const { classes, open, handleSidebarToggle, areas, handleCompetition } = this.props;
 
     return (
       <div className={classes.root}>
@@ -44,7 +44,7 @@ class Sidebar extends React.Component {
             role="button"
           >
             <ListCompetitions
-              competitions={competitions}
+              areas={areas}
               handleCompetition={handleCompetition}
               handleSidebarToggle={handleSidebarToggle}
             />

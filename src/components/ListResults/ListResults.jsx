@@ -21,9 +21,6 @@ function TabContainer(props) {
   );
 }
 
-const apiKey = '07343b6896a74d57920afd88bed1a68f';
-const APIUrl = 'http://api.football-data.org/v2/';
-
 const styles = theme => ({
   root: {
     flexGrow: 1,
@@ -36,6 +33,7 @@ const styles = theme => ({
 
 
 class ListResults extends React.Component {
+
     render() {
       const { classes, matchDayResults, getPrev, getNext, matchDay } = this.props;
 

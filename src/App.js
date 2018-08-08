@@ -5,17 +5,24 @@ import './App.css';
 import Dashboard from './views/Dashboard';
 import Competition from './views/Competition';
 import Sidebar from './components/Sidebar/Sidebar';
-import Header from './components/Header';
+import Header from './components/Layout/Header';
+import Footer from './components/Layout/Footer';
+
+const apiKey = '07343b6896a74d57920afd88bed1a68f';
 
 class App extends Component {
   state = {
-    competitions: [],
+    areas: [],
     isLoaded: false,
-    sidebarOpen: false
+    sidebarOpen: false,
+    title: 'Dashboard'
   };
 
   componentDidMount() {
-    const apiKey = '07343b6896a74d57920afd88bed1a68f';
+    this.getListCompetitions();
+  }
+
+  getListCompetitions = () => {
     fetch('http://api.football-data.org/v2/competitions/', {
       method: 'get',
       headers: new Headers({
@@ -24,22 +31,72 @@ class App extends Component {
     })
       .then(res => res.json())
       .then(data => {
-        this.setState({
-          competitions: data['competitions'].filter(item => {
-            return item.plan === 'TIER_ONE';
-          })
-        });
-        // console.log(this.state);
+        this.setState(
+          {
+            areas: this.associationOfCompetitionsByCountries(
+              this.filterCompetitions(data)
+            )
+          },
+          () => console.log(this.state.competitions)
+        );
       })
       .catch(err => console.error(err));
-  }
+  };
+
+  filterCompetitions = data => {
+    return data['competitions'].filter(item => {
+      return item.plan === 'TIER_ONE';
+    });
+  };
+
+  associationOfCompetitionsByCountries = data => {
+    let currentIndex = 0;
+    const competitionsByCountries = data.reduce(
+      (result, currentCompetition) => {
+        if (result.length === 0) {
+          return [
+            {
+              name: currentCompetition.area.name,
+              competitions: [currentCompetition]
+            }
+          ];
+        } else if (
+          !this.isObjectInArray(result, currentCompetition.area.name)
+        ) {
+          currentIndex++;
+          return [
+            ...result,
+            {
+              name: currentCompetition.area.name,
+              competitions: [currentCompetition]
+            }
+          ];
+        } else {
+          let competitions = result[currentIndex].competitions;
+          let newResult = result.filter((item, i) => i !== currentIndex);
+
+          return [
+            ...newResult,
+            {
+              name: currentCompetition.area.name,
+              competitions: [...competitions, currentCompetition]
+            }
+          ];
+        }
+      },
+      []
+    );
+
+    return competitionsByCountries;
+  };
+
+  isObjectInArray = (arr, value) => {
+    let result = arr.filter(item => item.name === value);
+    return result.length > 0;
+  };
 
   handleSidebarToggle = () => {
     this.setState({ sidebarOpen: !this.state.sidebarOpen });
-  };
-
-  handleCompetition = id => {
-    console.log(id);
   };
 
   render() {
@@ -48,11 +105,13 @@ class App extends Component {
         <Sidebar
           handleSidebarToggle={this.handleSidebarToggle}
           open={this.state.sidebarOpen}
-          competitions={this.state.competitions}
-          handleCompetition={this.handleCompetition}
+          areas={this.state.areas}
         />
         <main className="main">
-          <Header handleSidebarToggle={this.handleSidebarToggle} />
+          <Header
+            handleSidebarToggle={this.handleSidebarToggle}
+            title={this.state.title}
+          />
           <div className="content">
             <Switch>
               <Route exact path="/" component={Dashboard} />
@@ -60,6 +119,7 @@ class App extends Component {
             </Switch>
           </div>
         </main>
+        <Footer />
       </div>
     );
   }

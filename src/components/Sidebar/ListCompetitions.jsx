@@ -25,19 +25,19 @@ const styles = {
 
 class ListCompetitions extends React.Component {
   state = {
-    open: false
+    open: -1
   };
 
-  handleClick = () => {
-    this.setState(state => ({ open: !state.open }));
+  handleClick = (id, event) => {
+    this.setState(state => ({ open: id }));
   };
 
   render() {
-    const { classes, competitions, toggleDrawer, handleCompetition, handleSidebarToggle } = this.props;
+    const { classes, areas, toggleDrawer, handleSidebarToggle } = this.props;
 
     return (
       <div className={classes.list}>
-        <List component="nav" onClick={handleSidebarToggle}>
+        <List component="nav">
           <ListItem
             button
             component={Link}
@@ -51,37 +51,47 @@ class ListCompetitions extends React.Component {
             />
           </ListItem>
           <Divider />
-          {competitions.map((competition, id) => {
+          { areas.length !== 0 && areas.map((area, id) => {
             return (
-              <ListItem
-                button
-                key={id}
-                component={Link}
-                to={`/competition/${competition.id}`}
-                params={{id: competition.id}}
-              >
-                  <ListItemText
-                    primary={`${competition.name}`}
-                    secondary={`${competition.area.name}`}
-                  />
-                {/* <ListItemIcon>
-                  <InboxIcon />
-                </ListItemIcon> */}
+              <div key={id}>
+                <ListItem
+                  button
+                  id={id}
+                  onClick={(e) => this.handleClick(id, e)}
+                >
+                    <ListItemText
+                      primary={`${area.name}`}
+                      secondary={`${area.competitions.length} competition${area.competitions.length > 1 ? 's' : ''}`}
+                    />
+                  {/* <ListItemIcon>
+                    <InboxIcon />
+                  </ListItemIcon> */}
+                  
+                  {this.state.open === id ? <ExpandLess /> : <ExpandMore />}
+                </ListItem>
                 
-                {/* {this.state.open ? <ExpandLess /> : <ExpandMore />} */}
-              </ListItem>)
+                <Collapse in={this.state.open === id} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                    {area.competitions.map((competition, id) => {
+                      return (
+                        <ListItem
+                          key={id}
+                          button
+                          className={classes.nested}
+                          component={Link}
+                          to={`/competition/${competition.id}`}
+                          params={{id: competition.id}}
+                          onClick={handleSidebarToggle}
+                        >
+                          <ListItemText primary={`${competition.name}`} />
+                        </ListItem>
+                      )
+                    })
+                    }
+                  </List>
+                </Collapse>
+              </div>)
           })}
-          
-          {/* <Collapse in={this.state.open} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              <ListItem button className={classes.nested} onClick={event=>console.dir(event.target.innerText)}>
-                <ListItemText inset primary="Premier League" />
-              </ListItem>
-              <ListItem button className={classes.nested}>
-                <ListItemText inset primary="Championship" />
-              </ListItem>
-            </List>
-          </Collapse> */}
         </List>
       </div>
     );
