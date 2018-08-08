@@ -43,6 +43,7 @@ class App extends Component {
       .catch(err => console.error(err));
   };
 
+  // filter the data array by plan=TIER_ONE
   filterCompetitions = data => {
     return data['competitions'].filter(item => {
       return item.plan === 'TIER_ONE';
