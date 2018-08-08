@@ -32,7 +32,6 @@ class Competition extends React.PureComponent {
   componentDidMount() {
     this.getTableStandings(this.state.competitionId);
     this.getMatchDayResults(this.state.competitionId, this.state.matchDay);
-    this.getCompetitionSeasons(this.state.competitionId);
   }
 
   componentDidUpdate(prevProps, prevState) {
